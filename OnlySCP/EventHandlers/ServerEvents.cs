@@ -16,20 +16,20 @@ namespace OnlySCP.EventHandlers
     /// </summary>
     public class ServerEvents
     {
-        private readonly Config config;
+        private readonly Plugin plugin;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServerEvents"/> class.
         /// </summary>
-        /// <param name="config">An instance of the <see cref="Config"/> class.</param>
-        public ServerEvents(Config config) => this.config = config;
+        /// <param name="plugin">An instance of the <see cref="Plugin"/> class.</param>
+        public ServerEvents(Plugin plugin) => this.plugin = plugin;
 
         /// <inheritdoc cref="Exiled.Events.Handlers.Server.OnRoundStarted"/>
         public void OnRoundStarted()
         {
             List<Player> scps = ListPool<Player>.Shared.Rent(Player.Get(Team.SCP));
             if (scps.Count == 1)
-                scps[0].Role = config.FirstScp;
+                scps[0].Role = plugin.Config.FirstScp;
 
             ListPool<Player>.Shared.Return(scps);
         }

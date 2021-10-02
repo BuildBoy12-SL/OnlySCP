@@ -7,6 +7,7 @@
 
 namespace OnlySCP
 {
+    using System;
     using Exiled.API.Features;
     using OnlySCP.EventHandlers;
     using ServerHandlers = Exiled.Events.Handlers.Server;
@@ -16,35 +17,27 @@ namespace OnlySCP
     /// </summary>
     public class Plugin : Plugin<Config>
     {
-        private static readonly Plugin InstanceValue = new Plugin();
+        private ServerEvents serverEvents;
 
-        private Plugin()
-        {
-        }
+        /// <inheritdoc />
+        public override string Author { get; } = "Build";
 
-        /// <summary>
-        /// Gets an instance of the <see cref="Plugin"/> class.
-        /// </summary>
-        public static Plugin Instance { get; } = InstanceValue;
-
-        /// <summary>
-        /// Gets an instance of the <see cref="OnlySCP.EventHandlers.ServerEvents"/> class.
-        /// </summary>
-        public static ServerEvents ServerEvents { get; private set; }
+        /// <inheritdoc />
+        public override Version RequiredExiledVersion { get; } = new Version(3, 0, 0);
 
         /// <inheritdoc />
         public override void OnEnabled()
         {
-            ServerEvents = new ServerEvents(Config);
-            ServerHandlers.RoundStarted += ServerEvents.OnRoundStarted;
+            serverEvents = new ServerEvents(this);
+            ServerHandlers.RoundStarted += serverEvents.OnRoundStarted;
             base.OnEnabled();
         }
 
         /// <inheritdoc />
         public override void OnDisabled()
         {
-            ServerHandlers.RoundStarted -= ServerEvents.OnRoundStarted;
-            ServerEvents = null;
+            ServerHandlers.RoundStarted -= serverEvents.OnRoundStarted;
+            serverEvents = null;
             base.OnDisabled();
         }
     }
